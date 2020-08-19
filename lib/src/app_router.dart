@@ -195,11 +195,11 @@ class AppRouter {
       path = prefix + "/" + name;
 
       if (route.isNode) {
-        assert(route.children != null);
+        assert(route.children == null);
       }
 
       if (!route.isNode) {
-        assert(_routes[path] == null);
+        assert(_routes[path] != null);
         _routes[path] = route;
       }
 
