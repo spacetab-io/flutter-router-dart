@@ -28,54 +28,51 @@ final List<AppRoute> routes = [
     name: "2",
     builder: (_) => PageTwo(),
   ),
-  AppRoute(name: "3", builder: (_) => PageThree(), children: [
-    AppRoute(
-      name: "/",
-      builder: (_) => PageTwo(),
-    ),
-    AppRoute(
-      name: "2",
-      builder: (_) => PageTwo(),
-    ),
-    AppRoute(name: "3", builder: (_) => PageTwo(), children: [
-      AppRoute(
-        name: "/",
-        builder: (_) => PageTwo(),
+  AppRoute(
+      name: "3",
+      builder: (_) => PageThree(),
+      routeSettings: AppRouteBuilderSettings(
+        transition: FadeInRouteTransition.builder,
       ),
-      AppRoute(
-        name: "2",
-        builder: (_) => PageTwo(),
-      ),
-    ]),
-  ]),
+      children: [
+        AppRoute(
+          name: "/",
+          builder: (_) => PageTwo(),
+        ),
+        AppRoute(
+          name: "2",
+          builder: (_) => PageTwo(),
+        ),
+        AppRoute(name: "3", builder: (_) => PageTwo(), children: [
+          AppRoute(
+            name: "/",
+            builder: (_) => PageTwo(),
+          ),
+          AppRoute(
+            name: "2",
+            builder: (_) => PageTwo(),
+          ),
+        ]),
+      ]),
   AppRoute(
-    name: "4",
-    builder: (_) => PageFour(),
-    route: (enterScreen, settings) => AppRouteBuilder(
-      child: enterScreen,
-      settings: settings,
-      transitionBuilder: SlideTopRouteTransition.builder,
-    ),
-  ),
+      name: "4",
+      builder: (_) => PageFour(),
+      routeSettings: AppRouteBuilderSettings(
+        transition: SlideTopRouteTransition.builder,
+      )),
   AppRoute(
-    name: "5",
-    builder: (_) => PageFive(),
-    route: (enterScreen, settings) => AppRouteBuilder(
-      child: enterScreen,
-      settings: settings,
-      transitionBuilder: SlideTopRouteTransition.builder,
-    ),
-  ),
+      name: "5",
+      builder: (_) => PageFive(),
+      routeSettings: AppRouteBuilderSettings(
+        transition: SlideTopRouteTransition.builder,
+      )),
   AppRoute(
-    name: "6",
-    builder: (_) => PageSix(),
-    route: (enterScreen, settings) => AppRouteBuilder(
-      child: enterScreen,
-      settings: settings,
-      transitionBuilder: SlideTopRouteTransition.builder,
-      onSameTransitionBuilder: SlideLeftRouteTransition.builder,
-    ),
-  ),
+      name: "6",
+      builder: (_) => PageSix(),
+      routeSettings: AppRouteBuilderSettings(
+        transition: SlideTopRouteTransition.builder,
+        onSameTransition: SlideLeftRouteTransition.builder,
+      )),
   AppRoute(
     name: "7",
     builder: (_) => PageSeven(),
@@ -176,7 +173,7 @@ class PageTwo extends StatelessWidget {
         onPressed: () {
           AppNavigator.of(context).pushNamed("/3");
         },
-        child: Text("Slide from left to Page 3"),
+        child: Text("Fade in to Page 3"),
       ),
       FlatButton(
         onPressed: () {
@@ -197,20 +194,24 @@ class PageTwo extends StatelessWidget {
 class PageThree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Page("Slide Left Page 3", [
-      FlatButton(
-        onPressed: () {
-          AppNavigator.of(context).pushNamed("/4");
-        },
-        child: Text("Slide from top to Page 4 top (replace this)"),
-      ),
-      FlatButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: Text("Slide left to Page 2"),
-      ),
-    ]);
+    return Page(
+      "Fade In Page 3",
+      [
+        FlatButton(
+          onPressed: () {
+            AppNavigator.of(context).pushNamed("/4");
+          },
+          child: Text("Slide from top to Page 4 top (replace this)"),
+        ),
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text("Fade out to Page 2"),
+        ),
+      ],
+      bgColor: Colors.lightGreen,
+    );
   }
 }
 

@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'app_route_transition.dart';
 
 class AppRouteBuilder<T> extends PageRoute<T> {
-  static const _defaultTransitionDuration = const Duration(
-    milliseconds: 250,
+  static Duration defaultTransitionDuration = Duration(
+    milliseconds: 200,
   );
 
   AppRouteBuilder({
@@ -14,7 +14,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     this.child,
     @required AppRouteTransitionBuilder transitionBuilder,
     this.onSameTransitionBuilder,
-    Duration transitionDuration = _defaultTransitionDuration,
+    Duration transitionDuration,
     Duration reverseTransitionDuration,
     this.barrierColor,
     this.barrierLabel,
@@ -25,22 +25,23 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     this.enableUserGesture = true,
     this.noUserGestureForScopedWillPopCallback = false,
     RouteSettings settings,
-  })  : assert(builder != null || child != null),
+  })
+      : assert(builder != null || child != null),
         assert(transitionBuilder != null),
-        assert(transitionDuration != null),
         assert(opaque != null),
         assert(barrierDismissible != null),
         assert(fullscreenDialog != null),
         assert(noUserGestureForScopedWillPopCallback != null),
-        transitionDuration = transitionDuration,
-        reverseTransitionDuration =
-            reverseTransitionDuration ?? transitionDuration,
+        transitionDuration = transitionDuration ?? defaultTransitionDuration,
+        reverseTransitionDuration = reverseTransitionDuration ??
+            transitionDuration ??
+            defaultTransitionDuration,
         transitionBuilder = transitionBuilder,
         currentTransitionBuilder = transitionBuilder,
         super(
-          settings: settings,
-          fullscreenDialog: fullscreenDialog,
-        );
+        settings: settings,
+        fullscreenDialog: fullscreenDialog,
+      );
 
   @override
   final Duration transitionDuration;
@@ -91,19 +92,17 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   }
 
   @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
+  Widget buildPage(BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,) {
     final Widget result =
-        builder != null ? builder(context) : Builder(builder: (_) => child);
+    builder != null ? builder(context) : Builder(builder: (_) => child);
 
     assert(() {
       if (result == null) {
         throw FlutterError(
             'The builder for route "${settings.name}" returned null.\n'
-            'Route builders must never return null.');
+                'Route builders must never return null.');
       }
       return true;
     }());
@@ -139,7 +138,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     if (nextRoute is AppRouteBuilder) {
       bool shouldUseOnSameTransitionBuilder =
           nextRoute.transitionBuilder.runtimeType ==
-                  transitionBuilder.runtimeType &&
+              transitionBuilder.runtimeType &&
               nextRoute.onSameTransitionBuilder != null;
 
       currentTransitionBuilder = shouldUseOnSameTransitionBuilder
@@ -164,12 +163,10 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   }
 
   @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
+  Widget buildTransitions(BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child,) {
     return currentTransitionBuilder(
       this,
       animation,
@@ -179,13 +176,14 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     );
   }
 
-  bool get popGestureEnabled => !(this.isFirst ||
-      !this.enableUserGesture ||
-      this.willHandlePopInternally ||
-      (this.noUserGestureForScopedWillPopCallback &&
-          this.hasScopedWillPopCallback) ||
-      this.fullscreenDialog ||
-      this.animation.status != AnimationStatus.completed ||
-      this.secondaryAnimation.status != AnimationStatus.dismissed ||
-      this.navigator.userGestureInProgress);
+  bool get popGestureEnabled =>
+      !(this.isFirst ||
+          !this.enableUserGesture ||
+          this.willHandlePopInternally ||
+          (this.noUserGestureForScopedWillPopCallback &&
+              this.hasScopedWillPopCallback) ||
+          this.fullscreenDialog ||
+          this.animation.status != AnimationStatus.completed ||
+          this.secondaryAnimation.status != AnimationStatus.dismissed ||
+          this.navigator.userGestureInProgress);
 }

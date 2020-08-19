@@ -12,6 +12,31 @@ enum _SlideLeftRouteTransitionDragDirection {
 
 class SlideLeftRouteTransition extends StatefulWidget
     implements AppRouteTransition {
+  static Curve transitionCurve = Curves.easeInCubic;
+
+  static double swipeForwardStrengthValue = 5.0;
+  static double swipeBackwardStrengthValue = 0.1;
+
+  static double draggableWidth = 30.0;
+
+  static Tween<Offset> belowScreenOffsetTween = Tween<Offset>(
+    begin: const Offset(0, 0),
+    end: const Offset(-0.5, 0),
+  );
+
+  static Tween<Offset> aboveScreenOffsetTween = Tween<Offset>(
+    begin: const Offset(1, 0),
+    end: const Offset(0, 0),
+  );
+
+  static Tween<double> opacityTween = Tween<double>(
+    begin: 0.0,
+    end: 0.5,
+  );
+
+  static Color backdropColor = Color(0xFF000000);
+
+
   static AppRouteTransitionBuilder builder = (
     route,
     primaryAnimation,
@@ -52,27 +77,6 @@ class SlideLeftRouteTransition extends StatefulWidget
 
 class _SlideLeftRouteTransitionState extends State<SlideLeftRouteTransition>
     with SingleTickerProviderStateMixin {
-  static const Curve _transitionCurve = Curves.easeInCubic;
-
-  static const double _swipeForwardStrengthValue = 5.0;
-  static const double _swipeBackwardStrengthValue = 0.1;
-
-  static const double _draggableWidth = 30.0;
-
-  static Tween<Offset> _belowScreenOffsetTween = Tween<Offset>(
-    begin: const Offset(0, 0),
-    end: const Offset(-0.5, 0),
-  );
-
-  static Tween<Offset> _aboveScreenOffsetTween = Tween<Offset>(
-    begin: const Offset(1, 0),
-    end: const Offset(0, 0),
-  );
-
-  static Tween<double> _opacityTween = Tween<double>(
-    begin: 0.0,
-    end: 0.5,
-  );
 
   GlobalKey _enterScreenKey = GlobalKey();
   AnimationController _gestureAnimationController;
@@ -95,14 +99,14 @@ class _SlideLeftRouteTransitionState extends State<SlideLeftRouteTransition>
     );
 
     _curvedAnimation = CurvedAnimation(
-      curve: _transitionCurve,
-      reverseCurve: _transitionCurve.flipped,
+      curve: SlideLeftRouteTransition.transitionCurve,
+      reverseCurve: SlideLeftRouteTransition.transitionCurve.flipped,
       parent: widget.primaryAnimation,
     );
 
     _curvedSecondaryAnimation = CurvedAnimation(
-      curve: _transitionCurve,
-      reverseCurve: _transitionCurve.flipped,
+      curve: SlideLeftRouteTransition.transitionCurve,
+      reverseCurve: SlideLeftRouteTransition.transitionCurve.flipped,
       parent: widget.secondaryAnimation,
     );
 
@@ -157,13 +161,13 @@ class _SlideLeftRouteTransitionState extends State<SlideLeftRouteTransition>
 
         if (_dx >=
             (_currentDragOffset > 0.5
-                ? _swipeForwardStrengthValue
-                : _swipeBackwardStrengthValue)) {
+                ? SlideLeftRouteTransition.swipeForwardStrengthValue
+                : SlideLeftRouteTransition.swipeBackwardStrengthValue)) {
           _dragDirection = _SlideLeftRouteTransitionDragDirection.Left;
         } else if (_dx <=
             -(_currentDragOffset <= 0.5
-                ? _swipeForwardStrengthValue
-                : _swipeBackwardStrengthValue)) {
+                ? SlideLeftRouteTransition.swipeForwardStrengthValue
+                : SlideLeftRouteTransition.swipeBackwardStrengthValue)) {
           _dragDirection = _SlideLeftRouteTransitionDragDirection.Right;
         }
 
@@ -201,10 +205,10 @@ class _SlideLeftRouteTransitionState extends State<SlideLeftRouteTransition>
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
-      position: _curvedSecondaryAnimation.drive(_belowScreenOffsetTween),
+      position: _curvedSecondaryAnimation.drive(SlideLeftRouteTransition.belowScreenOffsetTween),
       child: SlideTransition(
         key: _enterScreenKey,
-        position: _transitionAnimation.drive(_aboveScreenOffsetTween),
+        position: _transitionAnimation.drive(SlideLeftRouteTransition.aboveScreenOffsetTween),
         child: Stack(
           children: <Widget>[
             SizedBox.expand(
@@ -243,18 +247,18 @@ class _SlideLeftRouteTransitionState extends State<SlideLeftRouteTransition>
                     bottom: false,
                     child: SizedBox(
                       height: double.infinity,
-                      width: _draggableWidth,
+                      width: SlideLeftRouteTransition.draggableWidth,
                     ),
                   ),
                 ),
               ),
             if (widget.secondaryAnimation.status != AnimationStatus.dismissed)
               FadeTransition(
-                opacity: _opacityTween.animate(widget.secondaryAnimation),
+                opacity: SlideLeftRouteTransition.opacityTween.animate(widget.secondaryAnimation),
                 child: Container(
                   padding: EdgeInsets.zero,
                   margin: EdgeInsets.zero,
-                  color: Color(0xFF000000),
+                  color: SlideLeftRouteTransition.backdropColor,
                   height: double.infinity,
                   width: double.infinity,
                 ),
