@@ -195,11 +195,11 @@ class AppRouter {
       path = prefix + "/" + name;
 
       if (route.isNode) {
-        assert(route.children == null);
+        assert(route.children == null, "$path should not have child routes");
       }
 
       if (!route.isNode) {
-        assert(_routes[path] != null);
+        assert(_routes[path] == null, "$path already defined (duplicate)");
         _routes[path] = route;
       }
 
