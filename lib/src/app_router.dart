@@ -195,7 +195,7 @@ class AppRouter {
       path = prefix + "/" + name;
 
       if (route.isNode) {
-        assert(route.children == null, "$path should not have child routes");
+        assert(route.children != null, "$path should have child routes as it's node route");
       }
 
       if (!route.isNode) {
