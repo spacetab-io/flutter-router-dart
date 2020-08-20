@@ -27,18 +27,21 @@ class AppRouteBuilderSettings {
     this.reverseTransitionDuration,
     this.fullScreenDialog,
     this.opaque,
+    this.barrierDisabled,
     this.transitionDesktop,
     this.onSameTransitionDesktop,
     this.transitionDurationDesktop,
     this.reverseTransitionDurationDesktop,
     this.fullScreenDialogDesktop,
     this.opaqueDesktop,
+    this.barrierDisabledDesktop,
     this.transitionWeb,
     this.onSameTransitionWeb,
     this.transitionDurationWeb,
     this.reverseTransitionDurationWeb,
     this.fullScreenDialogWeb,
     this.opaqueWeb,
+    this.barrierDisabledWeb,
   });
 
   final AppRouteTransitionBuilder transition;
@@ -57,10 +60,13 @@ class AppRouteBuilderSettings {
 
   final bool fullScreenDialog;
   final bool opaque;
+  final bool barrierDisabled;
   final bool fullScreenDialogDesktop;
   final bool opaqueDesktop;
+  final bool barrierDisabledDesktop;
   final bool fullScreenDialogWeb;
   final bool opaqueWeb;
+  final bool barrierDisabledWeb;
 }
 
 class AppRouteSettings {
@@ -125,6 +131,7 @@ class AppRouter {
     Duration reverseTransitionDuration = defaultReverseTransitionDuration,
     bool fullScreenDialog = false,
     bool opaque = true,
+    bool barrierDisabled = false,
     AppRouteTransitionBuilder transitionDesktop,
     AppRouteTransitionBuilder onSameTransitionDesktop,
     Duration transitionDurationDesktop = defaultTransitionDurationDesktop,
@@ -132,15 +139,20 @@ class AppRouter {
         defaultTransitionDurationDesktop,
     bool fullScreenDialogDesktop = false,
     bool opaqueDesktop = true,
+    bool barrierDisabledDesktop = false,
     AppRouteTransitionBuilder transitionWeb,
     AppRouteTransitionBuilder onSameTransitionWeb,
     Duration transitionDurationWeb = defaultTransitionDurationWeb,
     Duration reverseTransitionDurationWeb = defaultTransitionDurationWeb,
     bool fullScreenDialogWeb = false,
     bool opaqueWeb = true,
+    bool barrierDisabledWeb = false,
     this.strict = true,
   })  : assert(routes != null && routes.isNotEmpty),
         assert(strict != null),
+        assert(barrierDisabled != null &&
+            barrierDisabledDesktop != null &&
+            barrierDisabledWeb != null),
         defaultRouteSettings = AppRouteBuilderSettings(
           transition: transition ?? SlideLeftRouteTransition.builder,
           onSameTransition: onSameTransition,
@@ -148,6 +160,7 @@ class AppRouter {
           reverseTransitionDuration: reverseTransitionDuration,
           fullScreenDialog: fullScreenDialog,
           opaque: opaque,
+          barrierDisabled: barrierDisabled,
           transitionDesktop:
               transitionDesktop ?? SlideLeftRouteTransition.builder,
           onSameTransitionDesktop: onSameTransitionDesktop,
@@ -155,12 +168,14 @@ class AppRouter {
           reverseTransitionDurationDesktop: reverseTransitionDurationDesktop,
           fullScreenDialogDesktop: fullScreenDialogDesktop,
           opaqueDesktop: opaqueDesktop,
+          barrierDisabledDesktop: barrierDisabledDesktop,
           transitionWeb: transitionWeb ?? SlideLeftRouteTransition.builder,
           onSameTransitionWeb: onSameTransitionWeb,
           transitionDurationWeb: transitionDurationWeb,
           reverseTransitionDurationWeb: reverseTransitionDurationWeb,
           fullScreenDialogWeb: fullScreenDialogWeb,
           opaqueWeb: opaqueWeb,
+          barrierDisabledWeb: barrierDisabledWeb,
         ) {
     _parseAppRoutes(routes);
     assert(_routes["/"] != null);
@@ -169,8 +184,6 @@ class AppRouter {
   final AppRouteBuilderSettings defaultRouteSettings;
   final Map<String, AppRoute> _routes = {};
   final bool strict;
-
-  bool _initializedFirstPage = false;
 
   static bool get isDesktop =>
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
@@ -199,7 +212,8 @@ class AppRouter {
       path = prefix + "/" + name;
 
       if (route.isNode) {
-        assert(route.children != null, "$path should have child routes as it's node route");
+        assert(route.children != null,
+            "$path should have child routes as it's node route");
       }
 
       if (!route.isNode) {
@@ -249,6 +263,7 @@ class AppRouter {
     Duration reverseTransitionDuration;
     bool fulScreenDialog;
     bool opaque;
+    bool barrierDisbaled;
 
     if (isDesktop) {
       transitionBuilder = routeSettings?.routeSettings?.transitionDesktop ??
@@ -272,6 +287,9 @@ class AppRouter {
       opaque = routeSettings?.routeSettings?.opaqueDesktop ??
           route.routeSettings?.opaqueDesktop ??
           defaultRouteSettings.opaqueDesktop;
+      barrierDisbaled = routeSettings?.routeSettings?.barrierDisabledDesktop ??
+          route.routeSettings?.barrierDisabledDesktop ??
+          defaultRouteSettings.barrierDisabledDesktop;
     } else if (isWeb) {
       transitionBuilder = routeSettings?.routeSettings?.transitionWeb ??
           route.routeSettings?.transitionWeb ??
@@ -294,6 +312,9 @@ class AppRouter {
       opaque = routeSettings?.routeSettings?.opaqueWeb ??
           route.routeSettings?.opaqueWeb ??
           defaultRouteSettings.opaqueWeb;
+      barrierDisbaled = routeSettings?.routeSettings?.barrierDisabledWeb ??
+          route.routeSettings?.barrierDisabledWeb ??
+          defaultRouteSettings.barrierDisabledWeb;
     } else {
       transitionBuilder = routeSettings?.routeSettings?.transition ??
           route.routeSettings?.transition ??
@@ -315,6 +336,9 @@ class AppRouter {
       opaque = routeSettings?.routeSettings?.opaque ??
           route.routeSettings?.opaque ??
           defaultRouteSettings.opaque;
+      barrierDisbaled = routeSettings?.routeSettings?.barrierDisabled ??
+          route.routeSettings?.barrierDisabled ??
+          defaultRouteSettings.barrierDisabled;
     }
 
     final AppRouteBuilderReturner routeBuilder = routeSettings?.route ??
@@ -328,6 +352,7 @@ class AppRouter {
               reverseTransitionDuration: reverseTransitionDuration,
               fullscreenDialog: fulScreenDialog,
               opaque: opaque,
+              barrierDisabled: barrierDisbaled,
             );
 
     final result = routeBuilder(

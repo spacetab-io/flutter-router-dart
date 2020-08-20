@@ -19,8 +19,9 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     Duration reverseTransitionDuration,
     this.barrierColor,
     this.barrierLabel,
-    this.opaque = true,
     this.barrierDismissible = true,
+    this.barrierDisabled = false,
+    this.opaque = true,
     this.maintainState = true,
     bool fullscreenDialog = false,
     this.enableUserGesture = true,
@@ -51,19 +52,21 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   final Duration reverseTransitionDuration;
 
   @override
-  final bool opaque;
-
-  @override
-  final bool barrierDismissible;
-
-  @override
-  final bool maintainState;
-
-  @override
   final Color barrierColor;
 
   @override
   final String barrierLabel;
+
+  @override
+  final bool barrierDismissible;
+
+  final bool barrierDisabled;
+
+  @override
+  final bool opaque;
+
+  @override
+  final bool maintainState;
 
   final bool enableUserGesture;
 
@@ -95,29 +98,6 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     } else {
       currentTransitionBuilder = transitionBuilder;
     }
-  }
-
-  @override
-  Widget buildPage(BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,) {
-    final Widget result =
-    builder != null ? builder(context) : Builder(builder: (_) => child);
-
-    assert(() {
-      if (result == null) {
-        throw FlutterError(
-            'The builder for route "${settings.name}" returned null.\n'
-                'Route builders must never return null.');
-      }
-      return true;
-    }());
-
-    return Semantics(
-      scopesRoute: true,
-      explicitChildNodes: true,
-      child: result,
-    );
   }
 
   void transitionEndToListener(AnimationStatus status) {
@@ -181,6 +161,36 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     _handlePreviousRoute();
 
     return super.canTransitionFrom(previousRoute);
+  }
+
+  @override
+  Iterable<OverlayEntry> createOverlayEntries() sync* {
+    if (!barrierDisabled) {
+      yield* super.createOverlayEntries();
+    }
+  }
+
+  @override
+  Widget buildPage(BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,) {
+    final Widget result =
+    builder != null ? builder(context) : Builder(builder: (_) => child);
+
+    assert(() {
+      if (result == null) {
+        throw FlutterError(
+            'The builder for route "${settings.name}" returned null.\n'
+                'Route builders must never return null.');
+      }
+      return true;
+    }());
+
+    return Semantics(
+      scopesRoute: true,
+      explicitChildNodes: true,
+      child: result,
+    );
   }
 
   @override
