@@ -27,8 +27,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     this.enableUserGesture = true,
     this.noUserGestureForScopedWillPopCallback = false,
     RouteSettings settings,
-  })
-      : assert(builder != null || child != null),
+  })  : assert(builder != null || child != null),
         assert(transitionBuilder != null),
         assert(opaque != null),
         assert(barrierDismissible != null),
@@ -41,9 +40,9 @@ class AppRouteBuilder<T> extends PageRoute<T> {
         transitionBuilder = transitionBuilder,
         currentTransitionBuilder = transitionBuilder,
         super(
-        settings: settings,
-        fullscreenDialog: fullscreenDialog,
-      );
+          settings: settings,
+          fullscreenDialog: fullscreenDialog,
+        );
 
   @override
   final Duration transitionDuration;
@@ -139,7 +138,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     if (nextRoute is AppRouteBuilder) {
       bool shouldUseOnSameTransitionBuilder =
           nextRoute.transitionBuilder.runtimeType ==
-              transitionBuilder.runtimeType &&
+                  transitionBuilder.runtimeType &&
               nextRoute.onSameTransitionBuilder != null;
 
       currentTransitionBuilder = shouldUseOnSameTransitionBuilder
@@ -167,21 +166,25 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   Iterable<OverlayEntry> createOverlayEntries() sync* {
     if (!barrierDisabled) {
       yield* super.createOverlayEntries();
+    } else {
+      yield OverlayEntry(builder: (_) => SizedBox());
     }
   }
 
   @override
-  Widget buildPage(BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,) {
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     final Widget result =
-    builder != null ? builder(context) : Builder(builder: (_) => child);
+        builder != null ? builder(context) : Builder(builder: (_) => child);
 
     assert(() {
       if (result == null) {
         throw FlutterError(
             'The builder for route "${settings.name}" returned null.\n'
-                'Route builders must never return null.');
+            'Route builders must never return null.');
       }
       return true;
     }());
@@ -194,10 +197,12 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   }
 
   @override
-  Widget buildTransitions(BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return currentTransitionBuilder(
       this,
       animation,
@@ -207,14 +212,13 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     );
   }
 
-  bool get popGestureEnabled =>
-      !(this.isFirst ||
-          !this.enableUserGesture ||
-          this.willHandlePopInternally ||
-          (this.noUserGestureForScopedWillPopCallback &&
-              this.hasScopedWillPopCallback) ||
-          this.fullscreenDialog ||
-          this.animation.status != AnimationStatus.completed ||
-          this.secondaryAnimation.status != AnimationStatus.dismissed ||
-          this.navigator.userGestureInProgress);
+  bool get popGestureEnabled => !(this.isFirst ||
+      !this.enableUserGesture ||
+      this.willHandlePopInternally ||
+      (this.noUserGestureForScopedWillPopCallback &&
+          this.hasScopedWillPopCallback) ||
+      this.fullscreenDialog ||
+      this.animation.status != AnimationStatus.completed ||
+      this.secondaryAnimation.status != AnimationStatus.dismissed ||
+      this.navigator.userGestureInProgress);
 }
