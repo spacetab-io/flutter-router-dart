@@ -81,7 +81,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
 
   AppRouteBuilder previousRoute;
 
-  bool _didPop;
+  bool _didPop = false;
 
   List<Route> get navigatorControllerRouteHistory =>
       AppNavigatorController.history;
