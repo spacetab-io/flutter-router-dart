@@ -20,7 +20,6 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
     this.barrierColor,
     this.barrierLabel,
     this.barrierDismissible = true,
-    this.barrierDisabled = false,
     this.opaque = true,
     this.maintainState = true,
     this.fullscreenDialog = false,
@@ -59,8 +58,6 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
 
   @override
   final bool barrierDismissible;
-
-  final bool barrierDisabled;
 
   @override
   final bool opaque;
@@ -163,21 +160,6 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
     return super.canTransitionFrom(previousRoute);
   }
 
-  @override
-  void changedInternalState() {
-    if (!barrierDisabled) {
-      super.changedInternalState();
-    }
-  }
-
-  @override
-  Iterable<OverlayEntry> createOverlayEntries() sync* {
-    if (!barrierDisabled) {
-      yield* super.createOverlayEntries();
-    } else {
-      yield OverlayEntry(builder: (_) => SizedBox());
-    }
-  }
 
   @override
   Widget buildPage(
