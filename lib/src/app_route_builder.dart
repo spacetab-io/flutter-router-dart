@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'app_route_transition.dart';
 import 'app_router.dart';
 
-class AppRouteBuilder<T> extends PageRoute<T> {
+class AppRouteBuilder<T> extends ModalRoute<T> {
   static Duration defaultTransitionDuration = Duration(
     milliseconds: 200,
   );
@@ -23,7 +23,7 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     this.barrierDisabled = false,
     this.opaque = true,
     this.maintainState = true,
-    bool fullscreenDialog = false,
+    this.fullscreenDialog = false,
     this.enableUserGesture = true,
     this.noUserGestureForScopedWillPopCallback = false,
     RouteSettings settings,
@@ -41,7 +41,6 @@ class AppRouteBuilder<T> extends PageRoute<T> {
         currentTransitionBuilder = transitionBuilder,
         super(
           settings: settings,
-          fullscreenDialog: fullscreenDialog,
         );
 
   @override
@@ -49,6 +48,8 @@ class AppRouteBuilder<T> extends PageRoute<T> {
 
   @override
   final Duration reverseTransitionDuration;
+
+  final bool fullscreenDialog;
 
   @override
   final Color barrierColor;
@@ -160,6 +161,13 @@ class AppRouteBuilder<T> extends PageRoute<T> {
     _handlePreviousRoute();
 
     return super.canTransitionFrom(previousRoute);
+  }
+
+  @override
+  void changedInternalState() {
+    if (!barrierDisabled) {
+      super.changedInternalState();
+    }
   }
 
   @override
