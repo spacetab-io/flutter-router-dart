@@ -10,6 +10,8 @@ import 'app_route_builder.dart';
 import 'app_route_transition.dart';
 import 'transitions/slide_left_transition.dart';
 
+part 'app_navigator.dart';
+
 typedef AppRouteWidgetBuilder = Widget Function(Object);
 
 typedef AppRouteBuilderReturner = AppRouteBuilder Function(
@@ -167,6 +169,8 @@ class AppRouter {
   final AppRouteBuilderSettings defaultRouteSettings;
   final Map<String, AppRoute> _routes = {};
   final bool strict;
+
+  bool _initializedFirstPage = false;
 
   static bool get isDesktop =>
       !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
@@ -326,9 +330,16 @@ class AppRouter {
               opaque: opaque,
             );
 
-    return routeBuilder(
+    final result = routeBuilder(
       route.builder(routeSettings?.arguments ?? settings.arguments),
       newSettings,
     );
+
+    if (!AppNavigatorController._initializedFirstPage) {
+      AppNavigatorController._initializedFirstPage = true;
+      AppNavigatorController.history.add(result);
+    }
+
+    return result;
   }
 }

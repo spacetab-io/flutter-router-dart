@@ -3,6 +3,7 @@ library app_router;
 import 'package:flutter/widgets.dart';
 
 import 'app_route_transition.dart';
+import 'app_router.dart';
 
 class AppRouteBuilder<T> extends PageRoute<T> {
   static Duration defaultTransitionDuration = Duration(
@@ -80,6 +81,11 @@ class AppRouteBuilder<T> extends PageRoute<T> {
 
   AppRouteBuilder previousRoute;
 
+  bool _didPop;
+
+  List<Route> get navigatorControllerRouteHistory =>
+      AppNavigatorController.history;
+
   void _handlePreviousRoute() {
     if (previousRoute != null &&
         previousRoute.transitionBuilder.runtimeType ==
@@ -122,15 +128,30 @@ class AppRouteBuilder<T> extends PageRoute<T> {
   }
 
   @override
-  void didChangePrevious(Route previousRoute) {
-    if (previousRoute is AppRouteBuilder) {
-      this.previousRoute = previousRoute;
-    }
+  TickerFuture didPush() {
+    navigatorControllerRouteHistory.add(this);
+    return super.didPush();
+  }
 
-    if (secondaryAnimation.status == AnimationStatus.dismissed) {
-      _handlePreviousRoute();
+  @override
+  bool didPop(result) {
+    if (navigatorControllerRouteHistory.contains(this)) {
+      navigatorControllerRouteHistory.removeAt(
+        navigatorControllerRouteHistory.indexOf(this),
+      );
     }
-    super.didChangePrevious(previousRoute);
+    _didPop = true;
+    return super.didPop(result);
+  }
+
+  @override
+  void didComplete(T result) {
+    if (!_didPop && navigatorControllerRouteHistory.contains(this)) {
+      navigatorControllerRouteHistory.removeAt(
+        navigatorControllerRouteHistory.indexOf(this),
+      );
+    }
+    super.didComplete(result);
   }
 
   @override

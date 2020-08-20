@@ -1,6 +1,5 @@
 library app_router;
 
-export 'src/app_navigator.dart';
 export 'src/app_route_builder.dart';
 export 'src/app_route_transition.dart';
 export 'src/app_router.dart';

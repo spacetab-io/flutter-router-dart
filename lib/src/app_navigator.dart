@@ -1,10 +1,9 @@
-library app_router;
-
-import 'package:flutter/widgets.dart';
-
-import 'app_router.dart';
+part of 'app_router.dart';
 
 class AppNavigatorController {
+  static final List<Route> history = [];
+  static bool _initializedFirstPage = false;
+
   AppNavigatorController(
     this.navigatorState,
   );
@@ -84,6 +83,12 @@ class AppNavigatorController {
     @required Route<dynamic> anchorRoute,
     @required Route<T> newRoute,
   }) {
+    if (anchorRoute is AppRouteBuilder &&
+        newRoute is AppRouteBuilder &&
+        history.contains(anchorRoute)) {
+      history[history.indexOf(anchorRoute)] = newRoute;
+    }
+
     return navigatorState.replaceRouteBelow<T>(
       anchorRoute: anchorRoute,
       newRoute: newRoute,
@@ -101,8 +106,12 @@ class AppNavigatorController {
 
   void removeRoute(Route<dynamic> route) => navigatorState.removeRoute(route);
 
-  void removeRouteBelow(Route<dynamic> anchorRoute) =>
-      navigatorState.removeRouteBelow(anchorRoute);
+  void removeRouteBelow(Route<dynamic> anchorRoute) {
+    if (anchorRoute is AppRouteBuilder && history.contains(anchorRoute)) {
+      history.removeAt(history.indexOf(anchorRoute));
+    }
+    navigatorState.removeRouteBelow(anchorRoute);
+  }
 }
 
 class AppNavigator {

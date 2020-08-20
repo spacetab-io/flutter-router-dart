@@ -116,6 +116,8 @@ class Page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(AppNavigatorController.history.map((e) => e.settings.name));
+
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -199,7 +201,7 @@ class PageThree extends StatelessWidget {
       [
         FlatButton(
           onPressed: () {
-            AppNavigator.of(context).pushNamed("/4");
+            AppNavigator.of(context).pushReplacementNamed("/4");
           },
           child: Text("Slide from top to Page 4 top (replace this)"),
         ),
