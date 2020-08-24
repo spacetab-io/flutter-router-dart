@@ -146,7 +146,7 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
       secondaryAnimation.addStatusListener(transitionEndToListener);
       return true;
     }
-    return super.canTransitionTo(nextRoute);
+    return nextRoute is PageRoute;
   }
 
   @override
@@ -157,7 +157,7 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
 
     _handlePreviousRoute();
 
-    return super.canTransitionFrom(previousRoute);
+    return previousRoute is PageRoute;
   }
 
 
