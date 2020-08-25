@@ -170,8 +170,7 @@ class AppRouter {
   final Map<String, AppRoute> _routes = {};
   final bool strict;
 
-  static bool get isDesktop =>
-      !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
+  static bool get isDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   static bool get isWeb => kIsWeb;
 
@@ -249,29 +248,7 @@ class AppRouter {
     bool fulScreenDialog;
     bool opaque;
 
-    if (isDesktop) {
-      transitionBuilder = routeSettings?.routeSettings?.transitionDesktop ??
-          route.routeSettings?.transitionDesktop ??
-          defaultRouteSettings.transitionDesktop;
-      onSameTransitionBuilder =
-          routeSettings?.routeSettings?.onSameTransitionDesktop ??
-              route.routeSettings?.onSameTransitionDesktop ??
-              defaultRouteSettings.onSameTransitionDesktop;
-      transitionDuration =
-          routeSettings?.routeSettings?.transitionDurationDesktop ??
-              route.routeSettings?.transitionDurationDesktop ??
-              defaultRouteSettings.transitionDurationDesktop;
-      reverseTransitionDuration =
-          routeSettings?.routeSettings?.reverseTransitionDurationDesktop ??
-              route.routeSettings?.reverseTransitionDurationDesktop ??
-              defaultRouteSettings.reverseTransitionDurationDesktop;
-      fulScreenDialog = routeSettings?.routeSettings?.fullScreenDialogDesktop ??
-          route.routeSettings?.fullScreenDialogDesktop ??
-          defaultRouteSettings.fullScreenDialogDesktop;
-      opaque = routeSettings?.routeSettings?.opaqueDesktop ??
-          route.routeSettings?.opaqueDesktop ??
-          defaultRouteSettings.opaqueDesktop;
-    } else if (isWeb) {
+    if (isWeb) {
       transitionBuilder = routeSettings?.routeSettings?.transitionWeb ??
           route.routeSettings?.transitionWeb ??
           defaultRouteSettings.transitionWeb;
@@ -293,6 +270,28 @@ class AppRouter {
       opaque = routeSettings?.routeSettings?.opaqueWeb ??
           route.routeSettings?.opaqueWeb ??
           defaultRouteSettings.opaqueWeb;
+    } else if (isDesktop) {
+      transitionBuilder = routeSettings?.routeSettings?.transitionDesktop ??
+          route.routeSettings?.transitionDesktop ??
+          defaultRouteSettings.transitionDesktop;
+      onSameTransitionBuilder =
+          routeSettings?.routeSettings?.onSameTransitionDesktop ??
+              route.routeSettings?.onSameTransitionDesktop ??
+              defaultRouteSettings.onSameTransitionDesktop;
+      transitionDuration =
+          routeSettings?.routeSettings?.transitionDurationDesktop ??
+              route.routeSettings?.transitionDurationDesktop ??
+              defaultRouteSettings.transitionDurationDesktop;
+      reverseTransitionDuration =
+          routeSettings?.routeSettings?.reverseTransitionDurationDesktop ??
+              route.routeSettings?.reverseTransitionDurationDesktop ??
+              defaultRouteSettings.reverseTransitionDurationDesktop;
+      fulScreenDialog = routeSettings?.routeSettings?.fullScreenDialogDesktop ??
+          route.routeSettings?.fullScreenDialogDesktop ??
+          defaultRouteSettings.fullScreenDialogDesktop;
+      opaque = routeSettings?.routeSettings?.opaqueDesktop ??
+          route.routeSettings?.opaqueDesktop ??
+          defaultRouteSettings.opaqueDesktop;
     } else {
       transitionBuilder = routeSettings?.routeSettings?.transition ??
           route.routeSettings?.transition ??
