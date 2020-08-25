@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'app_route_transition.dart';
 import 'app_router.dart';
 
-class AppRouteBuilder<T> extends ModalRoute<T> {
+class AppRouteBuilder<T> extends PageRoute<T> {
   static Duration defaultTransitionDuration = Duration(
     milliseconds: 200,
   );
@@ -146,7 +146,7 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
       secondaryAnimation.addStatusListener(transitionEndToListener);
       return true;
     }
-    return nextRoute is PageRoute;
+    return super.canTransitionTo(nextRoute);
   }
 
   @override
@@ -157,9 +157,9 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
 
     _handlePreviousRoute();
 
-    return previousRoute is PageRoute || previousRoute is AppRouteBuilder;
+    return previousRoute is AppRouteBuilder ||
+        super.canTransitionFrom(previousRoute);
   }
-
 
   @override
   Widget buildPage(
