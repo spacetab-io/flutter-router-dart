@@ -157,7 +157,7 @@ class AppRouteBuilder<T> extends ModalRoute<T> {
 
     _handlePreviousRoute();
 
-    return previousRoute is PageRoute;
+    return previousRoute is PageRoute || previousRoute is AppRouteBuilder;
   }
 
 
